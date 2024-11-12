@@ -8,7 +8,6 @@ logger.configure({
   transports: [new logger.transports.Console()],
 });
 
-console.log('process.env.DB_HOST', process.env.DB_HOST);
 const AppDataSource = new DataSource({
   type: 'postgres',
   host: process.env.DB_HOST,

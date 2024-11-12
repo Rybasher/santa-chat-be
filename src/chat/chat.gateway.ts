@@ -7,12 +7,13 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { SantaService } from '../santa/santa.service';
-
+import { Logger } from '@nestjs/common';
 @WebSocketGateway({ cors: { origin: '*' }, namespace: '/' })
 export class ChatGateway {
   @WebSocketServer()
   server: Server;
 
+  private readonly logger = new Logger(ChatGateway.name);
   constructor(private readonly santaService: SantaService) {}
 
   @SubscribeMessage('sendMessage')
@@ -31,8 +32,7 @@ export class ChatGateway {
 
       this.server.to(client.id).emit('santa-response-end', 'Stream ended');
     } catch (err) {
-      console.error('Error while processing stream:', err);
-
+      this.logger.log('Error while processing stream:', err);
       this.server.to(client.id).emit('santa-response-error', {
         message: 'An error occurred while processing your message.',
         error: err.message,

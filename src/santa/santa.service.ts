@@ -1,18 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ChatService } from '../chat/chat.service';
-import { ChatCompletion, ChatCompletionMessageParam } from 'openai/resources';
+import { ChatCompletionMessageParam } from 'openai/resources';
 import OpenAI from 'openai';
-
-interface SantaResponseChunk {
-  content: string;
-}
-
-// Определение типа для сообщений чата вручную
-interface ChatCompletionRequestMessage {
-  role: string;
-  content: string;
-}
 
 @Injectable()
 export class SantaService {
@@ -31,7 +21,6 @@ export class SantaService {
     sessionId: string,
     userMessage: string,
   ): Promise<any> {
-    console.log("sessionID", sessionId);
     await this.chatService.saveMessage(sessionId, 'user', userMessage);
     const chatHistory = await this.chatService.getChatSession(sessionId);
 
@@ -43,7 +32,6 @@ export class SantaService {
         }) as ChatCompletionMessageParam,
     );
 
-    console.log('messages', history);
     const stream = await this.openai.chat.completions.create({
       model: 'gpt-4',
       messages: [
@@ -56,9 +44,7 @@ export class SantaService {
       ],
       stream: true,
     });
-    // for await (const chunk of stream) {
-    //   console.log(chunk.choices[0].delta.content);
-    // }
+
     const chatService = this.chatService;
 
     return (async function* () {

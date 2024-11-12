@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { ChatSession } from './entities/chat.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -74,7 +74,8 @@ export class ChatService {
     if (userSession) {
       return userSession.chatSessions;
     }
-    // If no user session found, return an empty array or handle accordingly
-    return [];
+    throw new NotFoundException(
+      'No chat sessions found for the provided user.',
+    );
   }
 }

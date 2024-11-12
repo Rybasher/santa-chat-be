@@ -6,14 +6,14 @@ import { ChatSession } from './entities/chat.entity';
 import { Message } from './entities/message.entity';
 import { UserSession } from '../session/entities/session.entity';
 import { SantaModule } from '../santa/santa.module';
-import { SessionModule } from "../session/session.module";
-import { ChatGateway } from "./chat.gateway";
+import { SessionModule } from '../session/session.module';
+import { ChatGateway } from './chat.gateway';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([ChatSession, Message, UserSession]),
     forwardRef(() => SantaModule),
-    forwardRef(() => SessionModule),
+    SessionModule,
   ],
   controllers: [ChatController],
   providers: [ChatService, ChatGateway],
