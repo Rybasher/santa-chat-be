@@ -1,0 +1,31 @@
+version: '3.0'
+
+services:
+  main:
+    container_name: santa_app
+    build:
+      context: .
+    env_file:
+      - .env
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    ports:
+      - 4000:4000
+    command: sh -c 'npm run migration:run && npm run start'
+    depends_on:
+      - postgres
+    restart: always
+
+  postgres:
+    container_name: chat_db
+    image: postgres:13
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    env_file: .env
+    ports:
+      - "10:5432"
+    restart: always
+
+volumes:
+  pgdata:
